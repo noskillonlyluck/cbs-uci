@@ -1,7 +1,7 @@
 {
-  "name": "node-uci",
-  "version": "1.3.4",
-  "description": "Universal Chess Interface protocol implementation for node.js",
+  "name": "cbs-uci",
+  "version": "1.0.0",
+  "description": "UCI based on node-uci",
   "main": "lib/index.js",
   "scripts": {
     "lint": "eslint .",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ebemunk/node-uci"
+    "url": "https://github.com/noskillonlyluck/cbs-uci"
   },
   "keywords": [
     "universal chess interface",
@@ -24,7 +24,7 @@
     "chess",
     "engine"
   ],
-  "author": "ebemunk",
+  "author": "noskillonlyluck",
   "license": "MIT",
   "dependencies": {
     "bluebird": "3.7.2",

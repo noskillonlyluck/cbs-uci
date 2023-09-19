@@ -1,4 +1,4 @@
-# node-uci
+# cbs-uci
 
 node-uci is an implementation of the [Universal Chess Interface](http://www.shredderchess.com/chess-info/features/uci-universal-chess-interface.html) protocol for node.js. In short, you can talk to engines (like Stockfish, Rybka, etc.) from node.js without any headaches. Abstracts away the pesky communication and parsing of UCI and provides a sane API to communicate with engines.
 

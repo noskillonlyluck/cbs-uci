@@ -438,7 +438,9 @@ export default class Engine {
     if (!this.proc)
       throw new Error('cannot call "goInfinite()": engine process not running')
     //set up emitter
-    this.emitter = new EventEmitter()
+    if (!this.emitter) {
+      this.emitter = new EventEmitter()
+    }
     const listener = buffer => {
       buffer
         .split(/\r?\n/g)
@@ -458,6 +460,19 @@ export default class Engine {
     })
     this.write(command)
     return this.emitter
+  }
+
+  async pause() {
+    if (!this.emitter)
+      throw new Error('cannot call "pause()": goInfinite() is not in progress')
+    this.write('stop')
+    this.emitter.emit('pause')
+    const lines = await this.getBufferUntil(line => REGEX.bestmove.test(line))
+    const result = lines.reduce(goReducer, {
+      bestmove: null,
+      info: [],
+    })
+    return result
   }
 
   /**
