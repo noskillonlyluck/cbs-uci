@@ -440,24 +440,37 @@ export default class Engine {
     //set up emitter
     if (!this.emitter) {
       this.emitter = new EventEmitter()
+      let paused = true
+      const listener = buffer => {
+        buffer
+          .split(/\r?\n/g)
+          .filter(line => !!line.length)
+          .forEach(line => {
+            if (paused) {
+              return
+            }
+            const info = parseInfo(line)
+            if (info) return this.emitter.emit('data', info)
+            const bestmove = parseBestmove(line)
+            if (bestmove) return this.emitter.emit('data', bestmove)
+          })
+      }
+
+      this.proc.stdout.on('data', listener)
+      this.emitter.on('stop', () => {
+        this.proc.stdout.removeListener('data', listener)
+      })
+      this.emitter.on('pause', () => {
+        paused = true
+      })
+      this.emitter.on('unpause', () => {
+        paused = false
+      })
     }
-    const listener = buffer => {
-      buffer
-        .split(/\r?\n/g)
-        .filter(line => !!line.length)
-        .forEach(line => {
-          const info = parseInfo(line)
-          if (info) return this.emitter.emit('data', info)
-          const bestmove = parseBestmove(line)
-          if (bestmove) return this.emitter.emit('data', bestmove)
-        })
-    }
+
     options.infinite = true
     const command = goCommand(options)
-    this.proc.stdout.on('data', listener)
-    this.emitter.on('stop', () => {
-      this.proc.stdout.removeListener('data', listener)
-    })
+    this.emitter.emit('unpause')
     this.write(command)
     return this.emitter
   }
@@ -494,6 +507,8 @@ export default class Engine {
       bestmove: null,
       info: [],
     })
+    this.emitter = undefined
+
     return result
   }
 }
