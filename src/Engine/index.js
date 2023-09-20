@@ -350,7 +350,9 @@ export default class Engine {
       cmd += ` moves ${movesStr}`
     }
     //send to engine
-    return this.sendCmd(`position ${cmd}`)
+    this.write(`position ${cmd}`)
+    return
+    //return this.sendCmd(`position ${cmd}`)
   }
 
   /**
@@ -470,7 +472,6 @@ export default class Engine {
 
     options.infinite = true
     const command = goCommand(options)
-    this.emitter.emit('unpause')
     this.write(command)
     return this.emitter
   }
@@ -480,12 +481,14 @@ export default class Engine {
       throw new Error('cannot call "pause()": goInfinite() is not in progress')
     this.write('stop')
     this.emitter.emit('pause')
+    return
+    /*
     const lines = await this.getBufferUntil(line => REGEX.bestmove.test(line))
     const result = lines.reduce(goReducer, {
       bestmove: null,
       info: [],
     })
-    return result
+    return result*/
   }
 
   /**
